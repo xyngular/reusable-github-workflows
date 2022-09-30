@@ -71,8 +71,8 @@ jobs:
       #----------------------------------------------
       #              publish release to pypi test
       #----------------------------------------------
-      - name: Publish to test pipy
-        if: ! inputs.real-publish
+      - name: Publish to test pypi
+        if: ${{ !inputs.real-publish }}
         run: |
           poetry config repositories.test-pypi https://test.pypi.org/legacy/
           poetry config pypi-token.test-pypi ${{secrets.PYPI_TEST_TOKEN}}
@@ -80,9 +80,9 @@ jobs:
       #----------------------------------------------
       #              publish release tp pypi prod
       #----------------------------------------------
-      - name: Publish to prod pipy
-        if: inputs.real-publish
+      - name: Publish to prod pypi
+        if: ${{ inputs.real-publish }}
         run: |
-          poetry config repositories.test-pypi https://test.pypi.org/legacy/
-          poetry config pypi-token.test-pypi ${{secrets.PYPI_TEST_TOKEN}}
-          poetry publish -r test-pypi
+          poetry config pypi-token.pypi ${{secrets.PYPI_PROD_TOKEN}}
+          poetry publish
+
