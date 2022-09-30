@@ -73,7 +73,7 @@ jobs:
       #----------------------------------------------
       #              publish release to pypi test
       #----------------------------------------------
-      - name: Publish to test pipy
+      - name: Publish to test pypi
         if: ${{ steps.release.outputs.release_created && !inputs.real-publish }}
         run: |
           poetry config repositories.test-pypi https://test.pypi.org/legacy/
@@ -82,7 +82,7 @@ jobs:
       #----------------------------------------------
       #              publish release tp pypi prod
       #----------------------------------------------
-      - name: Publish to prod pipy
+      - name: Publish to prod pypi
         if: ${{ steps.release.outputs.release_created && inputs.real-publish }}
         run: |
           poetry config repositories.test-pypi https://test.pypi.org/legacy/
