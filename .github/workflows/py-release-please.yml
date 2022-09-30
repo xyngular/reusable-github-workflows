@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/pyproject.toml') }}
 
       #----------------------------------------------
       # install dependencies if cache does not exist
@@ -56,9 +56,10 @@ jobs:
       #              run test suite
       #----------------------------------------------
       - name: Run Tests / Sanity Check
-        run: |
-          source .venv/bin/activate
-          pytest tests/
+        run: poetry run pytest
+      #----------------------------------------------
+      # release-please, increments version and tags releases.
+      #----------------------------------------------
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
