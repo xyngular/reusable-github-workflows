@@ -1,0 +1,58 @@
+name: Reusable publish documentation
+
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  publish_docs:
+    # Force Github action to run only a single job at a time (based on the group name)
+    # This is to prevent "race-condition" in publishing a new version of doc to `gh-pages`
+    concurrency:
+      group: on-docs-rebuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python Project
+        uses: xyngular/reusable-github-workflows/py-setup-project@main
+
+      - name: Retrieve Project Version
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['version'], end='')")
+          echo "VERSION=PY_OUTPUT" >> $GITHUB_ENV
+      - name: Retrieve Project Package
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+          echo "PY_PKG=PY_OUTPUT" >> $GITHUB_ENV
+      - name: Retrieve Project Module
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['packages'][0]['include'], end='')")
+          echo "PY_MODULE=PY_OUTPUT" >> $GITHUB_ENV
+
+      - name: Building Website Docs
+        run: |
+          rm -rf site api
+          poetry run mike deploy --push --update-aliases ${{ env.VERSION }} latest
+
+      - name: Building Api Ref Docs
+        run: poetry run pdoc --html --output-dir ./api/ ./${{ env.PY_MODULE }} --force --config='show_inherited_members=True'
+
+      - name: Release API docs
+        uses: peaceiris/actions-gh-pages@v3
+        env:
+          VERSION: ${{ inputs.version }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./api
+#          keep_files: true
+          destination_dir: ${{ env.VERSION }}/api
+
+      - name: Release API docs to latest
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./api
+#          keep_files: true
+          destination_dir: latest/api
