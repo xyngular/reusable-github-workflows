@@ -27,40 +27,47 @@ jobs:
         with:
           release-type: python
           package-name: ${{ env.PY_PKG }}
+
   create-release-output:
     needs: create-release
     runs-on: ubuntu-latest
     steps:
       - name: Dump out needs.create-release.created-release
         run: echo '${{ toJSON(needs.create-release.outputs.created-release) }}'
-  publish-release:
+
+  publish-docs:
     needs: create-release
+    if: ${{ needs.create-release.outputs.created-release }}
+    uses: xyngular/reusable-github-workflows/.github/workflows/py-publish-docs.yml@main
+
+  publish-release:
+    needs: [create-release, publish-docs]
     runs-on: ubuntu-latest
     environment: dev
     concurrency: deploy-dev
     if: ${{ needs.create-release.outputs.created-release }}
     steps:
-      - run: echo "RAN!!!!  Value='${{ needs.create-release.outputs.created-release }}'"
-#      #----------------------------------------------
-#      #              build release
-#      #----------------------------------------------
-#      - name: Build
-#        if: ${{ steps.release.outputs.release_created }}
-#        run: poetry build
-#      #----------------------------------------------
-#      #              publish release to pypi test
-#      #----------------------------------------------
-#      - name: Publish to test pypi
-#        if: ${{ steps.release.outputs.release_created && !inputs.real-publish }}
+      #----------------------------------------------
+      #              build release
+      #----------------------------------------------
+      - name: Build
+        run: poetry build
+      #----------------------------------------------
+      #              publish release to pypi test
+      #----------------------------------------------
+      - name: Publish to test pypi
+        if: ${{ !inputs.real-publish }}
+        run: echo "Would Have Published To TEST Pypi"
 #        run: |
 #          poetry config repositories.test-pypi https://test.pypi.org/legacy/
 #          poetry config pypi-token.test-pypi ${{secrets.PYPI_TEST_TOKEN}}
 #          poetry publish -r test-pypi
-#      #----------------------------------------------
-#      #              publish release tp pypi prod
-#      #----------------------------------------------
-#      - name: Publish to prod pypi
-#        if: ${{ steps.release.outputs.release_created && inputs.real-publish }}
+      #----------------------------------------------
+      #              publish release tp pypi prod
+      #----------------------------------------------
+      - name: Publish to prod pypi
+        if: ${{ inputs.real-publish }}
+        run: echo "Would Have Published To PROD Pypi"
 #        run: |
 #          poetry config pypi-token.pypi ${{secrets.PYPI_PROD_TOKEN}}
 #          poetry publish
