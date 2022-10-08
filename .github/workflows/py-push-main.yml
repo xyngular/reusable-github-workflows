@@ -15,6 +15,10 @@ jobs:
     steps:
       - name: Setup and Test Project
         uses: xyngular/reusable-github-workflows/py-run-tests@main
+      - name: Retrieve Project Package
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+          echo "PY_PKG=PY_OUTPUT" >> $GITHUB_ENV
       #----------------------------------------------
       # release-please, increments version and tags releases.
       #----------------------------------------------
@@ -22,7 +26,7 @@ jobs:
         id: release
         with:
           release-type: python
-          package-name: singleton-type
+          package-name: ${{ env.PY_PKG }}
   create-release-output:
     needs: create-release
     runs-on: ubuntu-latest
