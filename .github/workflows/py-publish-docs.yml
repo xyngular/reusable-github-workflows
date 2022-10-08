@@ -45,11 +45,11 @@ jobs:
 
       - name: Building Api Ref Docs
         run: poetry run pdoc --html --output-dir ./api/ ./${{ env.PY_MODULE }} --force --config='show_inherited_members=True'
-      - name: Move Api Ref Docs to Root
-        # I think pdoc puts it under PY_MODULE, but it may be under PY_PACKAGE instead; just keep an eye out in the future...
-        run: |
-          mv -f ./api/${{ env.PY_MODULE }}/* ./api/
-          rm -rf ./api/${{ env.PY_MODULE }}
+#      - name: Move Api Ref Docs to Root
+#        # I think pdoc puts it under PY_MODULE, but it may be under PY_PACKAGE instead; just keep an eye out in the future...
+#        run: |
+#          mv -f ./api/${{ env.PY_MODULE }}/* ./api/
+#          rm -rf ./api/${{ env.PY_MODULE }}
 
       - name: Release API docs
         uses: peaceiris/actions-gh-pages@v3
