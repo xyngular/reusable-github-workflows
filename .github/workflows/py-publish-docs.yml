@@ -21,15 +21,15 @@ jobs:
       - name: Retrieve Project Version
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['version'], end='')")
-          echo "VERSION=PY_OUTPUT" >> $GITHUB_ENV
+          echo "VERSION=$PY_OUTPUT" >> $GITHUB_ENV
       - name: Retrieve Project Package
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-          echo "PY_PKG=PY_OUTPUT" >> $GITHUB_ENV
+          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
       - name: Retrieve Project Module
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['packages'][0]['include'], end='')")
-          echo "PY_MODULE=PY_OUTPUT" >> $GITHUB_ENV
+          echo "PY_MODULE=$PY_OUTPUT" >> $GITHUB_ENV
 
       - name: Building Website Docs
         run: |
