@@ -32,15 +32,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump out needs.create-release.created-release
-        run: echo '${{ toJSON(needs.create-release.created-release) }}'
+        run: echo '${{ toJSON(needs.create-release.outputs.created-release) }}'
   publish-release:
     needs: create-release
     runs-on: ubuntu-latest
     environment: dev
     concurrency: deploy-dev
-    if: ${{ needs.create-release.created-release }}
+    if: ${{ needs.create-release.outputs.created-release }}
     steps:
-      - run: echo "RAN!!!!  Value='${{ needs.create-release.created-release }}'"
+      - run: echo "RAN!!!!  Value='${{ needs.create-release.outputs.created-release }}'"
 #      #----------------------------------------------
 #      #              build release
 #      #----------------------------------------------
