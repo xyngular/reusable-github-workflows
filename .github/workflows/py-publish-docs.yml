@@ -20,7 +20,6 @@ jobs:
       - name: Ensure on latest branch
         run: |
           git config pull.rebase true
-#          git config remote.origin.url >&- || git remote add origin https://github.com/"$ORIGIN"
           git pull origin main
       - name: Retrieve Project Version
         run: |
