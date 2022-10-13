@@ -48,7 +48,7 @@ jobs:
       # We probably don't need to test again... but I am doing a sanity check here,
       # right before we publish...
       - name: Setup and Test Project
-        uses: xyngular/reusable-github-workflows/py-setup-tests@main
+        uses: xyngular/reusable-github-workflows/py-run-tests@main
       #----------------------------------------------
       #              build release
       #----------------------------------------------
