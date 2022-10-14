@@ -39,6 +39,7 @@ jobs:
     needs: create-release
     if: ${{ needs.create-release.outputs.created-release }}
     uses: xyngular/reusable-github-workflows/.github/workflows/py-publish-docs.yml@main
+    secrets: inherit
 
   publish-release:
     needs: [create-release, publish-docs]
@@ -46,3 +47,4 @@ jobs:
     uses: xyngular/reusable-github-workflows/.github/workflows/py-publish-pypi.yml@main
     with:
       real-publish: ${{ inputs.real-publish }}
+    secrets: inherit
