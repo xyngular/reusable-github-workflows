@@ -44,32 +44,6 @@ jobs:
     needs: [create-release, publish-docs]
     runs-on: ubuntu-latest
     if: ${{ needs.create-release.outputs.created-release }}
-    steps:
-      # We probably don't need to test again... but I am doing a sanity check here,
-      # right before we publish...
-      - name: Setup and Test Project
-        uses: xyngular/reusable-github-workflows/py-run-tests@main
-      #----------------------------------------------
-      #              build release
-      #----------------------------------------------
-      - name: Build
-        run: poetry build
-      #----------------------------------------------
-      #              publish release to pypi test
-      #----------------------------------------------
-      - name: Publish to test pypi
-        if: ${{ !inputs.real-publish }}
-        run: echo "Would Have Published To TEST Pypi"
-#        run: |
-#          poetry config repositories.test-pypi https://test.pypi.org/legacy/
-#          poetry config pypi-token.test-pypi ${{secrets.PYPI_TEST_TOKEN}}
-#          poetry publish -r test-pypi
-      #----------------------------------------------
-      #              publish release tp pypi prod
-      #----------------------------------------------
-      - name: Publish to prod pypi
-        if: ${{ inputs.real-publish }}
-        run: echo "Would Have Published To PROD Pypi"
-#        run: |
-#          poetry config pypi-token.pypi ${{secrets.PYPI_PROD_TOKEN}}
-#          poetry publish
+    uses: xyngular/reusable-github-workflows/.github/workflows/py-publish-pypi.yml@main
+    with:
+      real-publish: ${{ inputs.real-publish }}
