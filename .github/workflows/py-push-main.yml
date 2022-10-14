@@ -42,7 +42,6 @@ jobs:
 
   publish-release:
     needs: [create-release, publish-docs]
-    runs-on: ubuntu-latest
     if: ${{ needs.create-release.outputs.created-release }}
     uses: xyngular/reusable-github-workflows/.github/workflows/py-publish-pypi.yml@main
     with:
