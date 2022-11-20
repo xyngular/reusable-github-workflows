@@ -48,7 +48,7 @@ jobs:
         run: poetry run mike deploy --push --update-aliases ${{ env.VERSION }} latest
 
       - name: Building Api Ref Docs
-        run: poetry run pdoc --html --output-dir ./api/ --force --config='show_inherited_members=True' ./${{ env.PY_MODULE }} ${{ env.PY_EXTRA_MODULE }}
+        run: poetry run pdoc --html --output-dir ./api/ --force --config='show_inherited_members=True' ./${{ env.PY_MODULE }} ${{ env.PY_EXTRA_MODULES }}
 #      - name: Move Api Ref Docs to Root
 #        # I think pdoc puts it under PY_MODULE, but it may be under PY_PACKAGE instead; just keep an eye out in the future...
 #        run: |
