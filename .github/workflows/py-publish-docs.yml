@@ -36,7 +36,7 @@ jobs:
           echo "PY_MODULE=$PY_OUTPUT" >> $GITHUB_ENV
       - name: Retrieve Project Module
         run: |
-          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(" ".join(tomlkit.parse(pathlib.Path('pyproject.toml').read_text()).get('tool', {}).get('custom', {}).get('xpublish', {}).get('extra-module-docs', [])), end='')")
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(' '.join(tomlkit.parse(pathlib.Path('pyproject.toml').read_text()).get('tool', {}).get('custom', {}).get('xpublish', {}).get('extra-module-docs', [])), end='')")
           echo "PY_EXTRA_MODULES=$PY_OUTPUT" >> $GITHUB_ENV
       - name: Setup doc deploy
         run: |
