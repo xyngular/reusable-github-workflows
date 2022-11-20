@@ -34,6 +34,10 @@ jobs:
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['packages'][0]['include'], end='')")
           echo "PY_MODULE=$PY_OUTPUT" >> $GITHUB_ENV
+      - name: Retrieve Project Module
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(" ".join(tomlkit.parse(pathlib.Path('pyproject.toml').read_text()).get('tool', {}).get('custom', {}).get('xpublish', {}).get('extra-module-docs', [])), end='')")
+          echo "PY_EXTRA_MODULES=$PY_OUTPUT" >> $GITHUB_ENV
       - name: Setup doc deploy
         run: |
           git config --global user.name Docs Deploy
@@ -44,7 +48,7 @@ jobs:
         run: poetry run mike deploy --push --update-aliases ${{ env.VERSION }} latest
 
       - name: Building Api Ref Docs
-        run: poetry run pdoc --html --output-dir ./api/ ./${{ env.PY_MODULE }} --force --config='show_inherited_members=True'
+        run: poetry run pdoc --html --output-dir ./api/ --force --config='show_inherited_members=True' ./${{ env.PY_MODULE }} ${{ env.PY_EXTRA_MODULE }}
 #      - name: Move Api Ref Docs to Root
 #        # I think pdoc puts it under PY_MODULE, but it may be under PY_PACKAGE instead; just keep an eye out in the future...
 #        run: |
